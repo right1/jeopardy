@@ -11,6 +11,8 @@ Note: all cells beginning in '//' will be ignored
 
 3. Next row: point values. List point values in ascending order for the amount of questions that are in each category
 
-4. Next row: final jeopardy (Optional). In order, question, answer, imageURL, showWith. ImageURL and showWith are optional. showWith possible values: "question", "answer"
+4. Next row: final jeopardy (Optional, if not wanted leave row blank). In order, question, answer, imageURL, showWith. ImageURL and showWith are optional. showWith possible values: "question", "answer"
 
 5. Remaining rows: images. Each row begins with the category index (0 based), then the question index (0 based). Then, add imageURL and showWith("question"/"answer")(optional, default="question")
+
+TODO: add winning notification
