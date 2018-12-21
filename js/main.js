@@ -1,0 +1,279 @@
+let jGame = new Jeopardy('//');
+const colors = ["success", "danger", "warning", "info", "secondary", "primary"];
+let numPlayers = 3;
+let timeToAnswer = 30;
+let currentPlayer = 0;
+let playersAnswered = 0;
+let scores = [];
+let fjstart=false;
+let wagers = [];
+let test;
+let q, a, showImage, imageURL;//showImage values: question, answer, false
+let gameDetails;
+let halted = false;
+$(function () {
+    $('#questionContainer').hide();
+    $('#fr').change(function (evt) {
+        var file = evt.target.files[0];
+        timeToAnswer=$('#questionTime').val();
+        numPlayers=Math.floor($('#numPlayers').val());
+        jGame.newGamefromCSV(file, function () {
+            populateTable();
+        });
+        setupScore();
+
+        disableScore();
+        $('#inputContainer').hide();
+        // populateTable();
+    });
+    $('#btn').click(function () {
+        if (jGame.questionsLeft()) {
+            $('#selectionContainer').show();
+            $('#questionContainer').hide();
+            halted = true;
+            disableScore();
+        } else {
+            $('#questionContainer').hide();
+            beginFinalJeopardy();
+        }
+    })
+    $('#fj_questionBtn').click(function () {
+        for (let i = 0; i < numPlayers; i++) {
+            wagers.push($('#wager' + i).val())
+        }
+        $('#fJ_category').hide();
+        showFinalJeopardyQuestion();
+    });
+    $('#showFJ_answer').click(function () {
+        $('#showFJ_answer').hide();
+        if(jGame.getFinalJeopardyImage()){
+            $('#fJ_img').show();
+        }
+        $('#fJ_answer').show();
+    })
+    $('#selectionContainer').on("click", "td", function () {
+        let catIndex = this.getAttribute('cno');
+        let qIndex = this.getAttribute('qno');
+        this.innerText = "";
+        q = jGame.selectQuestion(catIndex, qIndex);
+        if (q == -1) {
+            let result = confirm("Question already selected, click ok to proceed");
+            if (!result) return;
+            q = jGame.getQuestion(catIndex, qIndex);
+        }
+        a = jGame.getAnswer(catIndex, qIndex);
+        console.log(a);//log to console so moderator can see answer :)
+        playersAnswered = 0;
+        updateQuestion();
+        $('#selectionContainer').hide();
+        $('#questionContainer').show();
+    });
+    $('#scoreContainer').on("click", ".rightBtn", function () {
+        if (!fjstart) {
+            $('.progress').hide(100);
+            halted = true;
+            currentPlayer = parseInt(this.getAttribute('team'));
+            scores[currentPlayer] += q.value;
+            $('#teamScore' + currentPlayer).text(scores[currentPlayer]);
+            updateAnswer();
+        } else {
+            currentPlayer = parseInt(this.getAttribute('team'));
+            scores[currentPlayer] += wagers[currentPlayer];
+            $('#teamScore' + currentPlayer).text(scores[currentPlayer]);
+        }
+
+    });
+    $('#scoreContainer').on("click", ".passBtn", function () {
+        $('.progress').hide(100);
+        halted = true;
+        playersAnswered++;
+        disableScore();
+        
+        if (playersAnswered == numPlayers) {
+            currentPlayer = (currentPlayer + 1) % numPlayers;
+            updateAnswer();
+        }else{
+            enableScore((currentPlayer+playersAnswered)%numPlayers);
+        }
+    });
+    $('#scoreContainer').on("click", ".wrongBtn", function () {
+        if (!fjstart) {
+            $('.progress').hide(100);
+            halted = true;
+            playersAnswered++;
+            let thisPlayer = parseInt(this.getAttribute('team'));
+            scores[thisPlayer] -= q.value;
+            $('#teamScore' + thisPlayer).text(scores[thisPlayer]);
+            disableScore();
+            
+            if (playersAnswered == numPlayers) {
+                currentPlayer = (currentPlayer + 1) % numPlayers;
+                updateAnswer();
+            }else{
+                enableScore((currentPlayer+playersAnswered)%numPlayers);
+            }
+        } else {
+            currentPlayer = parseInt(this.getAttribute('team'));
+            scores[currentPlayer] -= wagers[currentPlayer];
+            $('#teamScore' + currentPlayer).text(scores[currentPlayer]);
+        }
+
+    });
+});
+function setupScore() {
+    let html = '<div class="row">'
+    for (let i = 0; i < numPlayers; i++) {
+        scores.push(0);
+        html += '<div class="col"><div class="card-special card"><div class="card-body">'
+        html += '<h2 class="card-title">Team '
+        html += (i + 1);
+        html += ': <span id="teamScore';
+        html += i;
+        html += '"</span>0</h2>';
+        html += '<button class="btn btn-';
+        html += colors[i % 4];
+        html += ' rightBtn" team="';
+        html += i;
+        html += '">'
+        html += '<img src="assets/open-iconic-master/svg/circle-check.svg" style="height:1.5rem" alt="Correct">'
+        html += '</button>'
+        html += '<button class="btn btn-';
+        html += colors[i % 4];
+        html += ' passBtn" team="';
+        html += i;
+        html += '">'
+        html += '<img src="assets/open-iconic-master/svg/loop.svg" style="height:1.5rem" alt="Pass">'
+        html += '</button>'
+        html += '<button class="btn btn-';
+        html += colors[i % 4];
+        html += ' wrongBtn" team="';
+        html += i;
+        html += '">'
+        html += '<img src="assets/open-iconic-master/svg/circle-x.svg" style="height:1.5rem" alt="Wrong">';
+        html += '</button>'
+        html += "</div></div></div>"
+    }
+    html += "</div>"
+    $('#scoreContainer').html(html);
+
+}
+function enableScore(el) {
+    $('.rightBtn').each(function(){
+        if(parseInt(this.getAttribute('team'))==el){
+            $(this).prop("disabled",false);
+        }
+    })
+    $('.passBtn').each(function(){
+        if(parseInt(this.getAttribute('team'))==el){
+            $(this).prop("disabled",false);
+        }
+    })
+    $('.wrongBtn').each(function(){
+        if(parseInt(this.getAttribute('team'))==el){
+            $(this).prop("disabled",false);
+        }
+    })
+}
+function disableScore() {
+    $('.rightBtn').prop("disabled", true);
+    $('.passBtn').prop("disabled", true);
+    $('.wrongBtn').prop("disabled", true);
+}
+function beginTimer() {
+    $(".progress").show(100);
+    let maxFlush = colors.length;
+    if (maxFlush > numPlayers) maxFlush = numPlayers;
+    for (let i = 0; i < maxFlush; i++) {
+        $('.progress-bar').removeClass("bg-" + colors[i]);
+    }
+    $('.progress-bar').addClass("bg-" + colors[currentPlayer]);
+    halted = false;
+    recursivelyProgress(timeToAnswer);
+
+}
+function recursivelyProgress(t) {
+    if (t > 0 && !halted) {
+        if (t == timeToAnswer) $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100);
+        t-=1;
+        setTimeout(function () {
+            let value = Math.round(100.0 * (t) / timeToAnswer);
+            $('.progress-bar').css('width', value + '%').attr('aria-valuenow', value);
+            recursivelyProgress(t);
+        }, 1000)
+    }
+
+}
+function updateQuestion() {
+    beginTimer();
+    enableScore(currentPlayer);
+    $('#image').hide();
+    $('#answer').hide();
+    $('#currPlayer').text(currentPlayer + 1);
+    $('#question').text(q.question);
+    if (q.image) {
+        $('#image').attr("src", q.image);
+    }
+    if (q.showWith && q.showWith.toLowerCase() == "question") {
+        $('#image').show();
+    }
+}
+function updateAnswer() {
+    $('#answer').show();
+    if (q.showWith && q.showWith.toLowerCase() == "answer") $('#image').show();
+    $('#answer').text(a);
+}
+function populateTable() {
+    let html = '<table class="table table-big text-white"><thead><tr>';
+    gameDetails = jGame.getGameDetails();
+    for (let i = 0; i < gameDetails.categories.length; i++) {
+        html += '<th scope="col">';
+        html += gameDetails.categories[i];
+        html += '</th>'
+    }
+    html += '</thead></tr><tbody>';
+    for (let pt = 0; pt < gameDetails.pointValues.length; pt++) {
+        html += '<tr>'
+        for (let cat = 0; cat < gameDetails.categories.length; cat++) {
+            html += '<td qno="';
+            html += pt;
+            html += '" cno="';
+            html += cat;
+            html += '">';
+            html += gameDetails.pointValues[pt];
+            html += '</td>';
+        }
+        html += '</tr>'
+    }
+    html += '</tbody></table>';
+
+    $('#selectionContainer').html(html);
+
+}
+function beginFinalJeopardy() {
+    $('.passBtn').prop('disabled',true);
+    fjstart=true;
+    $('#fJ_category').show();
+    $('#fJ_categoryText').text(jGame.getFinalJeopardy_category());
+    let html = "";
+    for (let i = 0; i < numPlayers; i++) {
+        html += '<div class="row"><div class="col-6"><p>Wager for Team ';
+        html += (i + 1);
+        html += '</p></div><div class="col-6"><input class="form-control" type="number" id="wager';
+        html += i;
+        html += '"></div></div>'
+    }
+    $('#wagers').html(html);
+}
+function showFinalJeopardyQuestion() {
+    $('#fJ_questionContainer').show();
+    $('#fJ_question').text(jGame.getFinalJeopardy_question());
+    $('#fJ_answer').hide();
+    $('#fJ_answer').text(jGame.getFinalJeopardy_answer());
+    let fJ_img = jGame.getFinalJeopardyImage();
+    if (fJ_img && fJ_img.showWith.toLowerCase() == "question") {
+        $('#fJ_img').attr("src", fJ_img.image);
+        $('#fJ_img').show();
+    } else if (fJ_img) {
+        $('#fJ_img').attr("src", fJ_img.image);
+    }
+}

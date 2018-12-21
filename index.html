@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+  <link rel="icon" href="https://puu.sh/BHK17/ffefb78022.png">
+
+  <title>Jeopardy</title>
+  <!-- <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/starter-template/"> -->
+
+  <!-- Bootstrap core CSS -->
+  <link href="css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/css/bootstrap3/bootstrap-switch.min.css"
+    rel="stylesheet">
+  <style>
+    @import url('https://www.fontify.me/wf/cde5a23b5ef22ddcc65736840b4dfc13');
+    .jFont{
+      font-family: font79357;
+    }
+    .headerText{
+      font-weight:5rem
+    }
+    .bodyText{
+      font-weight:4rem;
+      text-align:center
+    }
+    @font-face {
+      font-family: "Helvetica";
+      src: url("assets/fonts/Helvetica.woff") format("woff");
+    }
+    .fill {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      overflow: hidden
+    }
+    .fill img {
+        flex-shrink: 0;
+        min-width: 10%;
+        min-height: 10%;
+        max-height:100%;
+        max-width:100%
+    }
+    .table-big{
+      height:100%;
+      background-color:none;
+    }
+    .card-special{
+      /* color: white !important; */
+      background-color:blue;
+      border-color:blue;
+    }
+    .passBtn{
+      margin-left:1em;
+      margin-right:1em;
+    }
+    td{
+      text-align:center;
+      font-family:Helvetica;
+      font-size: 4rem;
+      color:gold
+    }
+    th{
+      text-align:center;
+      font-family: Helvetica;
+      font-size: 3rem
+    }
+    td:hover { 
+      background-color:rgb(80, 80, 255);
+      cursor: pointer;
+    }
+    .text-medium{
+      font-size:100%;
+      font-weight:bold;
+    }
+    a:hover{
+      cursor: pointer;
+    }
+    body{
+      background-color:blue;
+      color:white;
+    }
+  </style>
+
+</head>
+
+<body>
+
+
+  <div class="container">
+
+  </div>
+  <div class="pageContainer" style="height:100vh">
+    <div class="container" id="inputContainer">
+      <div class="row">
+        <div class="col">
+          Number of players/teams
+        </div>
+        <div class="col">
+          <input class="form-control" type="number" value="3" id="numPlayers">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+          Time to answer question (seconds)
+        </div>
+        <div class="col">
+          <input class="form-control" type="number" value="40" id="questionTime">
+        </div>
+      </div>
+      <div class="row">
+        <div class="col">
+            Add csv after selecting above two options
+        </div>
+        <div class="col">
+            <input type="file" id="fr">
+        </div>
+      </div>
+
+    </div>
+    <div id="selectionContainer" style="height:80%">
+      <!-- <input type="number" id="cat">
+        <input type="number" id="no"> -->
+    </div>
+    <div class="container" id="questionContainer" style="height:80%">
+      <div class="row">
+        <div class="col-12">
+          <div class="progress" id="progress">
+            <div class="progress-bar bg-success progress-bar-striped progress-bar-animated" role="progressbar"
+              aria-valuenow="100" aria-valuemin="0" aria-valuemax="100" style="width: 100%"><span class="text-medium">TEAM
+                <span id="currPlayer">0</span></span></div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="row flex-nowrap">
+        <div class="col-4" style="display:inline-block">
+          <div style="display:inline-block">
+            <a id="btn"><img src="assets/open-iconic-master/svg/arrow-thick-left.svg" style="height:1.5rem" alt="Correct"></a>
+          </div>
+          <div style="display:inline-block;width:1rem"></div>
+        </div>
+
+
+
+
+      </div>
+
+      <h1 class="jFont headerText" id="question"></h1>
+      <h3 class="jFont bodyText" id="answer"></h3>
+
+      <div class="fill" style="height:60%">
+        <img id="image">
+      </div>
+    </div>
+    <div class="container" id="fJ_category" style="height:80%;display:none">
+      <h1 class="jFont" id="fJ_categoryText"></h1>
+      <div id="wagers"></div>
+      <button class="btn btn-success" id="fj_questionBtn">Go</button>
+    </div>
+    <div class="container" id="fJ_questionContainer" style="height:80%;display:none">
+      <h1 class="jFont headerText" id="fJ_question"></h1>
+      <h3 class="jFont bodyText" id="fJ_answer"></h3>
+
+      <button class="btn btn-success" id="showFJ_answer">Show Answer</button>
+      <div class="fill" style="height:60%">
+        <img id="fJ_img" style="display:none">
+      </div>
+    </div>
+    <div class="container" id="scoreContainer" style="height:20%">
+
+    </div>
+  </div>
+
+
+  <!-- Bootstrap core JavaScript
+    ================================================== -->
+  <!-- Placed at the end of the document so the pages load faster -->
+
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.0/js/tether.min.js" integrity="sha384-DztdAPBWPRXSA/3eYEEUWrWCy7G5KFbe8fFjk5JAIxUYHKkDx6Qin1DkWx51bBrb"
+    crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+  <script src="js/bootstrap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/js/bootstrap-switch.min.js"></script>
+  <script src="js/papaparse.min.js"></script>
+  <script src="js/jeopardy.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
