@@ -33,18 +33,20 @@ $(function () {
             halted = true;
             disableScore();
         } else {
+            disableScore();
             $('#questionContainer').hide();
             beginFinalJeopardy();
         }
     })
     $('#fj_questionBtn').click(function () {
         for (let i = 0; i < numPlayers; i++) {
-            wagers.push($('#wager' + i).val())
+            wagers.push(parseInt($('#wager' + i).val()));
         }
         $('#fJ_category').hide();
         showFinalJeopardyQuestion();
     });
     $('#showFJ_answer').click(function () {
+        enableAllScore();
         $('#showFJ_answer').hide();
         if(jGame.getFinalJeopardyImage()){
             $('#fJ_img').show();
@@ -73,7 +75,7 @@ $(function () {
             $('.progress').hide(100);
             halted = true;
             currentPlayer = parseInt(this.getAttribute('team'));
-            scores[currentPlayer] += q.value;
+            scores[currentPlayer] += parseInt(q.value);
             $('#teamScore' + currentPlayer).text(scores[currentPlayer]);
             updateAnswer();
         } else {
@@ -102,7 +104,7 @@ $(function () {
             halted = true;
             playersAnswered++;
             let thisPlayer = parseInt(this.getAttribute('team'));
-            scores[thisPlayer] -= q.value;
+            scores[thisPlayer] -= parseInt(q.value);
             $('#teamScore' + thisPlayer).text(scores[thisPlayer]);
             disableScore();
             
@@ -156,6 +158,11 @@ function setupScore() {
     html += "</div>"
     $('#scoreContainer').html(html);
 
+}
+function enableAllScore(){
+    $('.rightBtn').prop("disabled", false);
+    $('.passBtn').prop("disabled", false);
+    $('.wrongBtn').prop("disabled", false);
 }
 function enableScore(el) {
     $('.rightBtn').each(function(){

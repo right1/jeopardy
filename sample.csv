@@ -1,7 +1,7 @@
 //categories: add as many as you like,c0,c1,c2,,,
 //c1: first category question,Question 0,Question 1,Question 2,Answer 0,Answer 1,Answer 2
-//c2: second category questions,Question c2-0,Question c2-1,Question c2-2,Answer c2-0,Answer c2-1,Answer c2-2
-//c3: third category questions,Question c3-0,Question c3-1,Question c3-2,Answer c3-0,Answer c3-1,Answer c3-2
+//c2: second category questions,Question c1-0,Question c1-1,Question c1-2,Answer c1-0,Answer c1-1,Answer c1-2
+//c3: third category questions,Question c2-0,Question c2-1,Question c2-2,Answer c2-0,Answer c2-1,Answer c2-2
 //pointValues: point values for each respective category,100,200,300,,,
 //finalJeopardy,Final jeopardy category,Final jeopardy question,Final jeopardy answer,Final jeopardy image url (optional),"Final jeopardy image loading (“question” or “answer”, optional)",
 //images,0,1,https://www.gstatic.com/images/branding/googlelogo/svg/googlelogo_clr_74x24px.svg,question,,
