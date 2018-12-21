@@ -111,7 +111,10 @@ class Jeopardy {
         return this.answers[cat][no];
     }
     setFinalJeopardy(cqai) {//category,question,answer,image
-        if (cqai.length < 3) return false;
+        if (cqai.length < 3){
+            this.finalJeopardyCategory=false;
+            return false;
+        } 
         this.finalJeopardyCategory=cqai[0];
         this.finalJeopardyQuestion = cqai[1];
         this.finalJeopardyAnswer = cqai[2];

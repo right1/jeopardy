@@ -5,7 +5,7 @@ let timeToAnswer = 30;
 let currentPlayer = 0;
 let playersAnswered = 0;
 let scores = [];
-let fjstart=false;
+let fjstart = false;
 let wagers = [];
 let test;
 let q, a, showImage, imageURL;//showImage values: question, answer, false
@@ -15,8 +15,8 @@ $(function () {
     $('#questionContainer').hide();
     $('#fr').change(function (evt) {
         var file = evt.target.files[0];
-        timeToAnswer=$('#questionTime').val();
-        numPlayers=Math.floor($('#numPlayers').val());
+        timeToAnswer = $('#questionTime').val();
+        numPlayers = Math.floor($('#numPlayers').val());
         jGame.newGamefromCSV(file, function () {
             populateTable();
         });
@@ -34,6 +34,7 @@ $(function () {
             disableScore();
         } else {
             disableScore();
+
             $('#questionContainer').hide();
             beginFinalJeopardy();
         }
@@ -46,13 +47,13 @@ $(function () {
         showFinalJeopardyQuestion();
     });
     $('#showFJ_answer').click(function () {
-        enableAllScore();
+        enableRightWrongBtn();
         $('#showFJ_answer').hide();
-        if(jGame.getFinalJeopardyImage()){
+        if (jGame.getFinalJeopardyImage()) {
             $('#fJ_img').show();
         }
         $('#fJ_answer').show();
-    })
+    });
     $('#selectionContainer').on("click", "td", function () {
         let catIndex = this.getAttribute('cno');
         let qIndex = this.getAttribute('qno');
@@ -79,9 +80,11 @@ $(function () {
             $('#teamScore' + currentPlayer).text(scores[currentPlayer]);
             updateAnswer();
         } else {
+            playersAnswered++;
             currentPlayer = parseInt(this.getAttribute('team'));
             scores[currentPlayer] += wagers[currentPlayer];
             $('#teamScore' + currentPlayer).text(scores[currentPlayer]);
+            if(playersAnswered==numPlayers)showWinner(true);
         }
 
     });
@@ -90,12 +93,12 @@ $(function () {
         halted = true;
         playersAnswered++;
         disableScore();
-        
+
         if (playersAnswered == numPlayers) {
             currentPlayer = (currentPlayer + 1) % numPlayers;
             updateAnswer();
-        }else{
-            enableScore((currentPlayer+playersAnswered)%numPlayers);
+        } else {
+            enableScore((currentPlayer + playersAnswered) % numPlayers);
         }
     });
     $('#scoreContainer').on("click", ".wrongBtn", function () {
@@ -107,23 +110,25 @@ $(function () {
             scores[thisPlayer] -= parseInt(q.value);
             $('#teamScore' + thisPlayer).text(scores[thisPlayer]);
             disableScore();
-            
+
             if (playersAnswered == numPlayers) {
                 currentPlayer = (currentPlayer + 1) % numPlayers;
                 updateAnswer();
-            }else{
-                enableScore((currentPlayer+playersAnswered)%numPlayers);
+            } else {
+                enableScore((currentPlayer + playersAnswered) % numPlayers);
             }
         } else {
+            playersAnswered++;
             currentPlayer = parseInt(this.getAttribute('team'));
             scores[currentPlayer] -= wagers[currentPlayer];
             $('#teamScore' + currentPlayer).text(scores[currentPlayer]);
+            if(playersAnswered==numPlayers)showWinner(true);
         }
 
     });
 });
 function setupScore() {
-    let html = '<div class="row">'
+    let html = '<div class="row" style="width:100%">'
     for (let i = 0; i < numPlayers; i++) {
         scores.push(0);
         html += '<div class="col"><div class="card-special card"><div class="card-body">'
@@ -159,25 +164,25 @@ function setupScore() {
     $('#scoreContainer').html(html);
 
 }
-function enableAllScore(){
+function enableRightWrongBtn() {
     $('.rightBtn').prop("disabled", false);
-    $('.passBtn').prop("disabled", false);
+    $('.passBtn').prop("disabled",true);
     $('.wrongBtn').prop("disabled", false);
 }
 function enableScore(el) {
-    $('.rightBtn').each(function(){
-        if(parseInt(this.getAttribute('team'))==el){
-            $(this).prop("disabled",false);
+    $('.rightBtn').each(function () {
+        if (parseInt(this.getAttribute('team')) == el) {
+            $(this).prop("disabled", false);
         }
     })
-    $('.passBtn').each(function(){
-        if(parseInt(this.getAttribute('team'))==el){
-            $(this).prop("disabled",false);
+    $('.passBtn').each(function () {
+        if (parseInt(this.getAttribute('team')) == el) {
+            $(this).prop("disabled", false);
         }
     })
-    $('.wrongBtn').each(function(){
-        if(parseInt(this.getAttribute('team'))==el){
-            $(this).prop("disabled",false);
+    $('.wrongBtn').each(function () {
+        if (parseInt(this.getAttribute('team')) == el) {
+            $(this).prop("disabled", false);
         }
     })
 }
@@ -201,7 +206,7 @@ function beginTimer() {
 function recursivelyProgress(t) {
     if (t > 0 && !halted) {
         if (t == timeToAnswer) $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100);
-        t-=1;
+        t -= 1;
         setTimeout(function () {
             let value = Math.round(100.0 * (t) / timeToAnswer);
             $('.progress-bar').css('width', value + '%').attr('aria-valuenow', value);
@@ -257,8 +262,12 @@ function populateTable() {
 
 }
 function beginFinalJeopardy() {
-    $('.passBtn').prop('disabled',true);
-    fjstart=true;
+    if (!jGame.getFinalJeopardy_category()){
+        showWinner(false);
+        return;
+    } 
+    $('.passBtn').prop('disabled', true);
+    fjstart = true;
     $('#fJ_category').show();
     $('#fJ_categoryText').text(jGame.getFinalJeopardy_category());
     let html = "";
@@ -272,6 +281,7 @@ function beginFinalJeopardy() {
     $('#wagers').html(html);
 }
 function showFinalJeopardyQuestion() {
+    playersAnswered = 0;
     $('#fJ_questionContainer').show();
     $('#fJ_question').text(jGame.getFinalJeopardy_question());
     $('#fJ_answer').hide();
@@ -283,4 +293,20 @@ function showFinalJeopardyQuestion() {
     } else if (fJ_img) {
         $('#fJ_img').attr("src", fJ_img.image);
     }
+}
+function showWinner(final) {
+    if (!final) {
+        $('#showFJ_answer').hide();
+        $('#fJ_questionContainer').show();
+    }
+    let winner = 0;
+    let winningScore = scores[0];
+    for (let i = 1; i < scores.length; i++) {
+        if (scores[i] > winningScore) {
+            winner = i;
+            winningScore = scores[i];
+        }
+    }
+    $('.winner').text("Team " + (winner + 1) + " won with a score of " + winningScore + " points!");
+    console.log('4head');
 }
