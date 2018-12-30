@@ -89,22 +89,23 @@ $(function () {
 
     });
     $('#scoreContainer').on("click", ".passBtn", function () {
-        $('.progress').hide(100);
-        halted = true;
         playersAnswered++;
         disableScore();
 
         if (playersAnswered == numPlayers) {
             currentPlayer = (currentPlayer + 1) % numPlayers;
+            $('.progress').hide(100);
+                halted=true;
             updateAnswer();
         } else {
             enableScore((currentPlayer + playersAnswered) % numPlayers);
+            $('#currPlayer').text((currentPlayer + playersAnswered) % numPlayers + 1);
+            flushProgressColors();
+            $('.progress-bar').addClass("bg-" + colors[(currentPlayer + playersAnswered) % numPlayers]);
         }
     });
     $('#scoreContainer').on("click", ".wrongBtn", function () {
         if (!fjstart) {
-            $('.progress').hide(100);
-            halted = true;
             playersAnswered++;
             let thisPlayer = parseInt(this.getAttribute('team'));
             scores[thisPlayer] -= parseInt(q.value);
@@ -112,10 +113,15 @@ $(function () {
             disableScore();
 
             if (playersAnswered == numPlayers) {
+                $('.progress').hide(100);
+                halted=true;
                 currentPlayer = (currentPlayer + 1) % numPlayers;
                 updateAnswer();
             } else {
                 enableScore((currentPlayer + playersAnswered) % numPlayers);
+                $('#currPlayer').text((currentPlayer + playersAnswered) % numPlayers + 1);
+                flushProgressColors();
+                $('.progress-bar').addClass("bg-" + colors[(currentPlayer + playersAnswered) % numPlayers]);
             }
         } else {
             playersAnswered++;
@@ -193,15 +199,18 @@ function disableScore() {
 }
 function beginTimer() {
     $(".progress").show(100);
+    flushProgressColors();
+    $('.progress-bar').addClass("bg-" + colors[currentPlayer]);
+    halted = false;
+    recursivelyProgress(timeToAnswer);
+
+}
+function flushProgressColors(){
     let maxFlush = colors.length;
     if (maxFlush > numPlayers) maxFlush = numPlayers;
     for (let i = 0; i < maxFlush; i++) {
         $('.progress-bar').removeClass("bg-" + colors[i]);
     }
-    $('.progress-bar').addClass("bg-" + colors[currentPlayer]);
-    halted = false;
-    recursivelyProgress(timeToAnswer);
-
 }
 function recursivelyProgress(t) {
     if (t > 0 && !halted) {
@@ -307,6 +316,15 @@ function showWinner(final) {
             winningScore = scores[i];
         }
     }
-    $('.winner').text("Team " + (winner + 1) + " won with a score of " + winningScore + " points!");
-    console.log('4head');
+    let winners=[];
+    for (let i = 0; i < scores.length; i++) {
+        if (scores[i] == winningScore) {
+            winners.push(i+1);
+        }
+    }
+    if(winners.length==1){
+        $('.winner').text("Team " + (winner + 1) + " won with a score of " + winningScore + " points!");
+    }else{
+        $('.winner').text("Teams "+winners.join(', ')+" tied with a score of "+winningScore+ " points.");
+    }
 }
