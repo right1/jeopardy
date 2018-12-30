@@ -58,7 +58,7 @@ class Jeopardy {
         return this.categories.length;
     }
     setPointValues(arr) {
-        if (arr){
+        if (arr&&arr.length>0){
             this.pointValues = arr.map(el=>parseInt(el));
         } 
         else {
@@ -147,7 +147,6 @@ class Jeopardy {
         Papa.parse(csv, {
             complete: function(results){
                 that.newGameFrom2D(that.validResults(results.data));
-                console.log('created game');
                 callback();
             }
         });
@@ -204,8 +203,7 @@ class Jeopardy {
         let aAmt = this.setAnswers(aArr);
         let catAmt = this.setCategories(cat);
         let ptAmt = this.setPointValues(pt);
-        if (!checkEqual([qAmt, aAmt, catAmt, ptAmt])) {
-            // console.log(qAmt,aAmt,catAmt,ptAmt);
+        if (!checkEqual([qAmt, aAmt, ptAmt])) {
             return false;//uneven amounts submitted
         }
         this.setFinalJeopardy(fJeopardy);
