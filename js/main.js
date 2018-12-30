@@ -221,7 +221,7 @@ function updateQuestion() {
     $('#image').hide();
     $('#answer').hide();
     $('#currPlayer').text(currentPlayer + 1);
-    $('#question').text(q.question);
+    $('#question').html(q.question);
     if (q.image) {
         $('#image').attr("src", q.image);
     }
@@ -232,7 +232,7 @@ function updateQuestion() {
 function updateAnswer() {
     $('#answer').show();
     if (q.showWith && q.showWith.toLowerCase() == "answer") $('#image').show();
-    $('#answer').text(a);
+    $('#answer').html(a);
 }
 function populateTable() {
     let html = '<table class="table table-big text-white"><thead><tr>';
@@ -269,7 +269,7 @@ function beginFinalJeopardy() {
     $('.passBtn').prop('disabled', true);
     fjstart = true;
     $('#fJ_category').show();
-    $('#fJ_categoryText').text(jGame.getFinalJeopardy_category());
+    $('#fJ_categoryText').html(jGame.getFinalJeopardy_category());
     let html = "";
     for (let i = 0; i < numPlayers; i++) {
         html += '<div class="row"><div class="col-6"><p>Wager for Team ';
@@ -283,9 +283,9 @@ function beginFinalJeopardy() {
 function showFinalJeopardyQuestion() {
     playersAnswered = 0;
     $('#fJ_questionContainer').show();
-    $('#fJ_question').text(jGame.getFinalJeopardy_question());
+    $('#fJ_question').html(jGame.getFinalJeopardy_question());
     $('#fJ_answer').hide();
-    $('#fJ_answer').text(jGame.getFinalJeopardy_answer());
+    $('#fJ_answer').html(jGame.getFinalJeopardy_answer());
     let fJ_img = jGame.getFinalJeopardyImage();
     if (fJ_img && fJ_img.showWith.toLowerCase() == "question") {
         $('#fJ_img').attr("src", fJ_img.image);
@@ -308,5 +308,4 @@ function showWinner(final) {
         }
     }
     $('.winner').text("Team " + (winner + 1) + " won with a score of " + winningScore + " points!");
-    console.log('4head');
 }
