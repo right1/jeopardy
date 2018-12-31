@@ -33,7 +33,7 @@ class Jeopardy {
             }
         }
         this.qAmount = qAmount;
-        this.cAmount = arr[0].length;
+        this.cAmount = arr.length;
         return qAmount;
     }
     setAnswers(arr) {
