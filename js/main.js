@@ -6,6 +6,7 @@ let currentPlayer = 0;
 let playersAnswered = 0;
 let scores = [];
 let fjstart = false;
+let answerOpen=false;
 let wagers = [];
 let test;
 let q, a, showImage, imageURL;//showImage values: question, answer, false
@@ -20,6 +21,7 @@ $(function () {
         jGame.newGamefromCSV(file, function () {
             populateTable();
         });
+        answerOpen=document.getElementById("answerOpen").checked;
         setupScore();
 
         disableScore();
@@ -175,7 +177,14 @@ function enableRightWrongBtn() {
     $('.passBtn').prop("disabled",true);
     $('.wrongBtn').prop("disabled", false);
 }
+
 function enableScore(el) {
+    if(el===true||answerOpen){
+        $('.rightBtn').prop("disabled", false);
+        $('.passBtn').prop("disabled",false);
+        $('.wrongBtn').prop("disabled", false);
+        return;
+    }
     $('.rightBtn').each(function () {
         if (parseInt(this.getAttribute('team')) == el) {
             $(this).prop("disabled", false);
