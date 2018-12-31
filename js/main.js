@@ -308,6 +308,10 @@ function showWinner(final) {
         $('#showFJ_answer').hide();
         $('#fJ_questionContainer').show();
     }
+    let fJ_img = jGame.getFinalJeopardyImage();
+    if (fJ_img && fJ_img.showWith.toLowerCase() == "answer") {
+        $('#fJ_img').show();
+    }
     let winner = 0;
     let winningScore = scores[0];
     for (let i = 1; i < scores.length; i++) {
