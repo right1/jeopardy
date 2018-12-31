@@ -20,6 +20,9 @@ $(function () {
         numPlayers = Math.floor($('#numPlayers').val());
         jGame.newGamefromCSV(file, function () {
             populateTable();
+            let numQuestions=jGame.getGameDetails().questionCount;
+            let vhPer=parseInt(75.0/numQuestions);
+            $('.body-cell').css('max-height',vhPer+'%')
         });
         answerOpen=document.getElementById("answerOpen").checked;
         setupScore();
@@ -256,7 +259,7 @@ function populateTable() {
     let html = '<table class="table table-big text-white"><thead><tr>';
     gameDetails = jGame.getGameDetails();
     for (let i = 0; i < gameDetails.categories.length; i++) {
-        html += '<th scope="col">';
+        html += '<th class="head-cell" scope="col">';
         html += gameDetails.categories[i];
         html += '</th>'
     }
@@ -264,7 +267,7 @@ function populateTable() {
     for (let pt = 0; pt < gameDetails.pointValues.length; pt++) {
         html += '<tr>'
         for (let cat = 0; cat < gameDetails.categories.length; cat++) {
-            html += '<td qno="';
+            html += '<td class="body-cell" qno="';
             html += pt;
             html += '" cno="';
             html += cat;
