@@ -1,6 +1,7 @@
 let jGame = new Jeopardy('//');
 const colors = ["success", "danger", "warning", "info", "secondary", "primary"];
 let numPlayers = 3;
+let playerNames = ["Team 1", "Team 2", "Team 3"];
 let timeToAnswer = 30;
 let currentPlayer = 0;
 let playersAnswered = 0;
@@ -14,10 +15,19 @@ let gameDetails;
 let halted = false;
 $(function () {
     $('#questionContainer').hide();
+    setupNameSelector();
+    $('#numPlayers').change(function(){
+        setupNameSelector();
+    })
+
+    
     $('#fr').change(function (evt) {
         var file = evt.target.files[0];
         timeToAnswer = $('#questionTime').val();
-        numPlayers = Math.floor($('#numPlayers').val());
+        playerNames = [];
+        for(let i = 0; i < numPlayers; i++) {
+            playerNames.push($('#teamName_'+i).val());
+        }
         jGame.newGamefromCSV(file, function () {
             populateTable();
             let numQuestions=jGame.getGameDetails().questionCount;
@@ -104,7 +114,7 @@ $(function () {
             updateAnswer();
         } else {
             enableScore((currentPlayer + playersAnswered) % numPlayers);
-            $('#currPlayer').text((currentPlayer + playersAnswered) % numPlayers + 1);
+            // $('#currPlayer').text((currentPlayer + playersAnswered) % numPlayers + 1);
             flushProgressColors();
             $('.progress-bar').addClass("bg-" + colors[(currentPlayer + playersAnswered) % numPlayers]);
         }
@@ -124,7 +134,7 @@ $(function () {
                 updateAnswer();
             } else {
                 enableScore((currentPlayer + playersAnswered) % numPlayers);
-                $('#currPlayer').text((currentPlayer + playersAnswered) % numPlayers + 1);
+                // $('#currPlayer').text((currentPlayer + playersAnswered) % numPlayers + 1);
                 flushProgressColors();
                 $('.progress-bar').addClass("bg-" + colors[(currentPlayer + playersAnswered) % numPlayers]);
             }
@@ -143,8 +153,8 @@ function setupScore() {
     for (let i = 0; i < numPlayers; i++) {
         scores.push(0);
         html += '<div class="col"><div class="card-special card"><div class="card-body">'
-        html += '<h2 class="card-title">Team '
-        html += (i + 1);
+        html += '<h2 class="card-title">'
+        html += playerNames[i];
         html += ': <span id="teamScore';
         html += i;
         html += '"</span>0</h2>';
@@ -241,7 +251,7 @@ function updateQuestion() {
     enableScore(currentPlayer);
     $('#image').hide();
     $('#answer').hide();
-    $('#currPlayer').text(currentPlayer + 1);
+    // $('#currPlayer').text(currentPlayer + 1);
     $('#question').html(q.question);
     if (q.image) {
         $('#image').attr("src", q.image);
@@ -339,8 +349,21 @@ function showWinner(final) {
         }
     }
     if(winners.length==1){
-        $('.winner').text("Team " + (winner + 1) + " won with a score of " + winningScore + " points!");
+        $('.winner').text("Team " + playerNames[winner] + " won with a score of " + winningScore + " points!");
     }else{
-        $('.winner').text("Teams "+winners.join(', ')+" tied with a score of "+winningScore+ " points.");
+        let winningNames = [];
+        for(let i = 0; i < winners.length; i++) {
+            winningNames.push(playerNames[winners[i]]);
+        }
+        $('.winner').text("Teams "+winningNames.join(', ')+" tied with a score of "+winningScore+ " points.");
     }
+}
+
+function setupNameSelector(){
+    numPlayers = Math.floor($('#numPlayers').val());
+    let playersHTML = "";
+    for(let i = 0; i < numPlayers; i++) {
+        playersHTML += '<input type="text" name="fname" value="Team ' + (i+1) + '" id="teamName_' + i + '"><br></br>'
+    }
+    $('#nameSelection').html(playersHTML);
 }
