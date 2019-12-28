@@ -303,8 +303,8 @@ function beginFinalJeopardy() {
     $('#fJ_categoryText').html(jGame.getFinalJeopardy_category());
     let html = "";
     for (let i = 0; i < numPlayers; i++) {
-        html += '<div class="row"><div class="col-6"><p>Wager for Team ';
-        html += (i + 1);
+        html += '<div class="row"><div class="col-6"><p>Wager for ';
+        html += playerNames[i];
         html += '</p></div><div class="col-6"><input class="form-control" type="number" id="wager';
         html += i;
         html += '"></div></div>'
@@ -345,7 +345,7 @@ function showWinner(final) {
     let winners=[];
     for (let i = 0; i < scores.length; i++) {
         if (scores[i] == winningScore) {
-            winners.push(i+1);
+            winners.push(i);
         }
     }
     if(winners.length==1){
