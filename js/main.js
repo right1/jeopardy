@@ -13,6 +13,7 @@ let test;
 let q, a, showImage, imageURL;//showImage values: question, answer, false
 let gameDetails;
 let halted = false;
+let penalty = 1;
 $(function () {
     $('#questionContainer').hide();
     setupNameSelector();
@@ -36,7 +37,7 @@ $(function () {
         });
         answerOpen=document.getElementById("answerOpen").checked;
         setupScore();
-
+        penalty = $('#wrongPenalty').val();
         disableScore();
         $('#inputContainer').hide();
         // populateTable();
@@ -131,7 +132,7 @@ $(function () {
         if (!fjstart) {
             playersAnswered++;
             let thisPlayer = parseInt(this.getAttribute('team'));
-            scores[thisPlayer] -= parseInt(q.value);
+            scores[thisPlayer] -= Math.floor(penalty * parseInt(q.value));
             $('#teamScore' + thisPlayer).text(scores[thisPlayer]);
             disableScore();
 
