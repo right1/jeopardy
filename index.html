@@ -9,93 +9,17 @@
   <link rel="icon" href="assets/images/jeopardy-logo.png">
 
   <title>Jeopardy</title>
-  <!-- <link rel="canonical" href="https://getbootstrap.com/docs/4.0/examples/starter-template/"> -->
 
   <!-- Bootstrap core CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet">
+
   <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/css/bootstrap3/bootstrap-switch.min.css"
     rel="stylesheet">
-  <style>
-    @import url('https://www.fontify.me/wf/cde5a23b5ef22ddcc65736840b4dfc13');
-    .jFont{
-      font-family: font79357;
-    }
-    .headerText{
-      font-size:2.5rem
-    }
-    .bodyText{
-      font-size:3.0rem;
-      text-align:center
-    }
-    @font-face {
-      font-family: "Helvetica";
-      src: url("assets/fonts/Helvetica.woff") format("woff");
-    }
-    .fill {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      overflow: hidden
-    }
-    .fill img {
-        flex-shrink: 0;
-        min-width: 10%;
-        min-height: 10%;
-        max-height:100%;
-        max-width:100%
-    }
-    .table-big{
-      height:100% !important;
-      background-color:none;
-    }
-    .card-special{
-      /* color: white !important; */
-      background-color:blue;
-      border-color:blue;
-    }
-    .passBtn{
-      margin-left:1em;
-      margin-right:1em;
-    }
-    td{
-      text-align:center;
-      font-family:Helvetica;
-      color:gold;
-      font-size: 2.5rem;
-    }
-    th{
-      text-align:center;
-      font-family: Helvetica;
-      font-size: x-large;
-    }
-    .head-cell{
-      max-height:25vh;
-    }
-    td:hover { 
-      background-color:rgb(80, 80, 255);
-      cursor: pointer;
-    }
-    .text-medium{
-      font-size:100%;
-      font-weight:bold;
-    }
-    a:hover{
-      cursor: pointer;
-    }
-    body{
-      background-color:blue;
-      color:white;
-    }
-  </style>
-
+  <link href="css/style.css" rel="stylesheet">
 </head>
 
 <body>
 
-
-  <div class="container">
-
-  </div>
   <div class="pageContainer" style="height:100vh">
     <div class="container" id="inputContainer">
       <div class="row">
@@ -167,13 +91,12 @@
       <div class="row flex-nowrap">
         <div class="col-4" style="display:inline-block">
           <div style="display:inline-block">
-            <a id="btn"><img src="assets/images/back.png" style="height:1.5rem" alt="Correct"></a>
+            <a id="btn"><img src="assets/images/back.png" style="height:1.5rem" alt="Back"></a>
+            <p style="width:1vw;display:inline-block"></p>
+            <a id="allPassBtn"><img src="assets/open-iconic-master/svg/loop.svg" style="height:1.5rem" alt="All Pass"></a>
           </div>
           <div style="display:inline-block;width:1rem"></div>
         </div>
-
-
-
 
       </div>
 

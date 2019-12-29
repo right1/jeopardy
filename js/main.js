@@ -110,7 +110,7 @@ $(function () {
         if (playersAnswered == numPlayers) {
             currentPlayer = (currentPlayer + 1) % numPlayers;
             $('.progress').hide(100);
-                halted=true;
+            halted=true;
             updateAnswer();
         } else {
             enableScore((currentPlayer + playersAnswered) % numPlayers);
@@ -119,6 +119,14 @@ $(function () {
             $('.progress-bar').addClass("bg-" + colors[(currentPlayer + playersAnswered) % numPlayers]);
         }
     });
+    $('#allPassBtn').click(function() {
+        playersAnswered = numPlayers;
+        disableScore();
+        currentPlayer = (currentPlayer + 1) % numPlayers;
+        $('.progress').hide(100);
+        halted=true;
+        updateAnswer();
+    })
     $('#scoreContainer').on("click", ".wrongBtn", function () {
         if (!fjstart) {
             playersAnswered++;
@@ -135,8 +143,11 @@ $(function () {
             } else {
                 enableScore((currentPlayer + playersAnswered) % numPlayers);
                 // $('#currPlayer').text((currentPlayer + playersAnswered) % numPlayers + 1);
-                flushProgressColors();
-                $('.progress-bar').addClass("bg-" + colors[(currentPlayer + playersAnswered) % numPlayers]);
+                if(!answerOpen){
+                    flushProgressColors();
+                    $('.progress-bar').addClass("bg-" + colors[(currentPlayer + playersAnswered) % numPlayers]);
+                }
+                
             }
         } else {
             playersAnswered++;
@@ -194,7 +205,7 @@ function enableRightWrongBtn() {
 function enableScore(el) {
     if(el===true||answerOpen){
         $('.rightBtn').prop("disabled", false);
-        $('.passBtn').prop("disabled",false);
+        $('.passBtn').prop("disabled",true);
         $('.wrongBtn').prop("disabled", false);
         return;
     }
@@ -203,11 +214,14 @@ function enableScore(el) {
             $(this).prop("disabled", false);
         }
     })
-    $('.passBtn').each(function () {
-        if (parseInt(this.getAttribute('team')) == el) {
-            $(this).prop("disabled", false);
-        }
-    })
+    if(!answerOpen){
+        $('.passBtn').each(function () {
+            if (parseInt(this.getAttribute('team')) == el) {
+                $(this).prop("disabled", false);
+            }
+        })
+    }
+    
     $('.wrongBtn').each(function () {
         if (parseInt(this.getAttribute('team')) == el) {
             $(this).prop("disabled", false);
