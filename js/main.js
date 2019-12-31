@@ -171,21 +171,21 @@ function setupScore() {
         html += i;
         html += '"</span>0</h2>';
         html += '<button class="btn btn-';
-        html += colors[i % 4];
+        html += colors[i % colors.length];
         html += ' rightBtn" team="';
         html += i;
         html += '">'
         html += '<img src="assets/open-iconic-master/svg/circle-check.svg" style="height:1.5rem" alt="Correct">'
         html += '</button>'
         html += '<button class="btn btn-';
-        html += colors[i % 4];
+        html += colors[i % colors.length];
         html += ' passBtn" team="';
         html += i;
         html += '">'
         html += '<img src="assets/open-iconic-master/svg/loop.svg" style="height:1.5rem" alt="Pass">'
         html += '</button>'
         html += '<button class="btn btn-';
-        html += colors[i % 4];
+        html += colors[i % colors.length];
         html += ' wrongBtn" team="';
         html += i;
         html += '">'
