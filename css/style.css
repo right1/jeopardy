@@ -1,7 +1,13 @@
-
-@import url('https://www.fontify.me/wf/cde5a23b5ef22ddcc65736840b4dfc13');
+@font-face {
+    font-family: "Helvetica";
+    src: url("../assets/fonts/Helvetica.woff") format("woff");
+}
+@font-face {
+    font-family: 'Korinna';
+    src: url("../assets/fonts/OPTIKorinna-Agency.otf");
+}
 .jFont{
-    font-family: font79357;
+    font-family: 'Korinna';
 }
 .headerText{
     font-size:2.5rem
@@ -10,10 +16,7 @@
     font-size:3.0rem;
     text-align:center
 }
-@font-face {
-    font-family: "Helvetica";
-    src: url("assets/fonts/Helvetica.woff") format("woff");
-}
+
 .fill {
     display: flex;
     justify-content: center;
