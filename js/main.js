@@ -364,13 +364,13 @@ function showWinner(final) {
         }
     }
     if(winners.length==1){
-        $('.winner').text("Team " + playerNames[winner] + " won with a score of " + winningScore + " points!");
+        $('.winner').text(playerNames[winner] + " won with a score of " + winningScore + " points!");
     }else{
         let winningNames = [];
         for(let i = 0; i < winners.length; i++) {
             winningNames.push(playerNames[winners[i]]);
         }
-        $('.winner').text("Teams "+winningNames.join(', ')+" tied with a score of "+winningScore+ " points.");
+        $('.winner').text(winningNames.join(', ') + " tied with a score of "+winningScore+ " points.");
     }
 }
 
