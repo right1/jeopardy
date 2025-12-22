@@ -73,7 +73,7 @@ $(function () {
     $('#selectionContainer').on("click", "td", function () {
         let catIndex = this.getAttribute('cno');
         let qIndex = this.getAttribute('qno');
-        this.innerText = "‎ ";
+        this.innerHTML = "‎<wbr>";
         q = jGame.selectQuestion(catIndex, qIndex);
         if (q == -1) {
             let result = confirm("Question already selected, click ok to proceed");
