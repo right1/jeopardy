@@ -73,7 +73,7 @@ $(function () {
     $('#selectionContainer').on("click", "td", function () {
         let catIndex = this.getAttribute('cno');
         let qIndex = this.getAttribute('qno');
-        this.innerText = "";
+        this.innerText = "‎ ";
         q = jGame.selectQuestion(catIndex, qIndex);
         if (q == -1) {
             let result = confirm("Question already selected, click ok to proceed");
@@ -81,7 +81,7 @@ $(function () {
             q = jGame.getQuestion(catIndex, qIndex);
         }
         a = jGame.getAnswer(catIndex, qIndex);
-        console.log(a);//log to console so moderator can see answer :)
+        console.log(a); //log to console so moderator can see answer :)
         playersAnswered = 0;
         updateQuestion();
         $('#selectionContainer').hide();
