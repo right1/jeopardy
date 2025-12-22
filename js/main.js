@@ -250,7 +250,7 @@ function flushProgressColors(){
     }
 }
 function recursivelyProgress(t) {
-    if (t > 0 && !halted) {
+    if (t > 0 && !halted && $('.progress-bar').is(':visible')) {
         if (t == timeToAnswer) $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100);
         t -= 1;
         setTimeout(function () {
