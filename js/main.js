@@ -2,7 +2,7 @@ let jGame = new Jeopardy('//');
 const colors = ["success", "danger", "warning", "info", "secondary", "primary"];
 let numPlayers = 3;
 let playerNames = ["Team 1", "Team 2", "Team 3"];
-let timeToAnswer = 30;
+let timeToAnswerMs = 30000;
 let currentPlayer = 0;
 let playersAnswered = 0;
 let scores = [];
@@ -14,6 +14,9 @@ let q, a, showImage, imageURL;//showImage values: question, answer, false
 let gameDetails;
 let halted = false;
 let penalty = 1;
+
+let TIMER_DECREMENT_MS = 100;
+
 $(function () {
     $('#questionContainer').hide();
     setupNameSelector();
@@ -24,7 +27,7 @@ $(function () {
     
     $('#fr').change(function (evt) {
         var file = evt.target.files[0];
-        timeToAnswer = $('#questionTime').val();
+        timeToAnswerMs = $('#questionTime').val() * 1000;
         playerNames = [];
         for(let i = 0; i < numPlayers; i++) {
             playerNames.push($('#teamName_'+i).val());
@@ -239,7 +242,7 @@ function beginTimer() {
     flushProgressColors();
     $('.progress-bar').addClass("bg-" + colors[currentPlayer]);
     halted = false;
-    recursivelyProgress(timeToAnswer);
+    recursivelyProgress(timeToAnswerMs);
 
 }
 function flushProgressColors(){
@@ -251,13 +254,13 @@ function flushProgressColors(){
 }
 function recursivelyProgress(t) {
     if (t > 0 && !halted) {
-        if (t == timeToAnswer) $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100);
-        t -= 1;
+        if (t == timeToAnswerMs) $('.progress-bar').css('width', '100%').attr('aria-valuenow', 100);
+        t -= TIMER_DECREMENT_MS;
         setTimeout(function () {
-            let value = Math.round(100.0 * (t) / timeToAnswer);
+            let value = Math.round(100.0 * (t) / timeToAnswerMs);
             $('.progress-bar').css('width', value + '%').attr('aria-valuenow', value);
             if ($('.progress-bar').is(':visible')) recursivelyProgress(t);
-        }, 1000)
+        }, TIMER_DECREMENT_MS)
     }
 
 }
