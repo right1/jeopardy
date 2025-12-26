@@ -40,7 +40,7 @@ $(function () {
         });
         answerOpen=document.getElementById("answerOpen").checked;
         setupScore();
-        if(answerOpen) $('.passBtn).hide();
+        if(answerOpen) $('.passBtn').hide();
         penalty = $('#wrongPenalty').val();
         disableScore();
         $('#inputContainer').hide();
